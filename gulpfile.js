@@ -11,7 +11,9 @@ var livereload = require('gulp-livereload');
 var PATHS = {
   src: {
     js: 'src/**/*.js',
-    html: 'src/**/*.html'
+    assets: 'src/assets/**/*',
+    html: 'src/**/*.html',
+    lib:'node_modules/*'
   },
   lib: [
     'node_modules/gulp-traceur/node_modules/traceur/bin/traceur-runtime.js',
@@ -57,7 +59,7 @@ gulp.task('html', function () {
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('libs', ['angular2'], function () {
+gulp.task('libs', ['angular2', 'gsap', 'snapsvg'], function () {
   return gulp.src(PATHS.lib)
     .pipe(gulp.dest('dist/lib'));
 });
@@ -76,12 +78,47 @@ gulp.task('angular2', function () {
     .pipe(concat('angular2.js'))
     .pipe(gulp.dest('dist/lib'));
 });
-
+gulp.task('gsap', function () {
+  //transpile & concat
+  return gulp.src([
+      'node_modules/gsap/src/uncompressed/TimelineLite.js',
+      'node_modules/gsap/src/uncompressed/TweenLite.js',
+      'node_modules/gsap/src/uncompressed/plugins/**/*.js',
+      'node_modules/gsap/src/uncompressed/utils/Draggable.js'],
+    {base: 'node_modules/gsap/src/uncompressed'})
+    .pipe(rename(function (path) {
+      path.dirname = 'gsap/' + path.dirname; //this is not ideal... but not sure how to change angular's file structure
+      path.extname = ''; //hack, see: https://github.com/sindresorhus/gulp-traceur/issues/54
+    }))
+    .pipe(traceur({modules: 'instantiate', moduleName: true}))
+    .pipe(concat('gsap.js'))
+    .pipe(gulp.dest('dist/lib'));
+});
+gulp.task('snapsvg', function () {
+  //transpile & concat
+  return gulp.src([
+      'node_modules/snapsvg/dist/snap.svg.js'],
+    {base: 'node_modules/snapsvg/dist'})
+    .pipe(rename(function (path) {
+      path.dirname = 'snapsvg/' + path.dirname; //this is not ideal... but not sure how to change angular's file structure
+      path.extname = ''; //hack, see: https://github.com/sindresorhus/gulp-traceur/issues/54
+    }))
+    .pipe(traceur({modules: 'instantiate', moduleName: true}))
+    .pipe(concat('snap.svg.js'))
+    .pipe(gulp.dest('dist/lib'));
+});
+gulp.task('assets', function () {
+  return gulp.src(PATHS.src.assets)
+    .pipe(livereload())
+    .pipe(gulp.dest('dist/assets'));
+});
 gulp.task('start', ['default'], function () {
 
   livereload.listen();
   gulp.watch(PATHS.src.html, ['html']);
   gulp.watch(PATHS.src.js, ['js']);
+  gulp.watch(PATHS.src.assets, ['assets']);
+  gulp.watch(PATHS.src.lib, ['angular2', 'gsap', 'snapsvg']);
 
   app = connect().use(connectLiveReload({port: 35729}));
   app.use(serveStatic(__dirname + '/dist'));  // serve everything that is static
@@ -92,4 +129,4 @@ gulp.task('start', ['default'], function () {
   });
 });
 
-gulp.task('default', ['js', 'html', 'libs']);
+gulp.task('default', ['js', 'html', 'libs', 'assets']);

@@ -1,0 +1,22 @@
+{
+  "libs": [
+    "ecma5",
+    "ecma6",
+    "jquery"
+  ],
+  "loadEagerly": [
+    "**/*.js"
+  ],
+  "dontLoad": [
+    "absolute/or/relative/path/to/your/js/**/*.js"
+  ],
+  "plugins": {
+    "complete_strings": {},
+    "node": {},
+    "angular": {},
+    "requirejs": {},
+    "doc_comment": {
+      "fullDocs": true
+    }
+  }
+}

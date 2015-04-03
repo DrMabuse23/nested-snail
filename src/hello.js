@@ -1,6 +1,5 @@
 import {Component, Template} from 'angular2/angular2';
 import {If} from 'angular2/angular2';
-
 @Component({
   selector: 'hello'
 })
@@ -13,7 +12,7 @@ export class Hello {
   constructor() {
     this.name = 'World';
     setTimeout(() => {
-      this.name = 'Snail'
+      this.name = 'Snail fan'
     }, 2000);
   }
 }
