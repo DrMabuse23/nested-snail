@@ -7,7 +7,7 @@ var traceur = require('gulp-traceur');
 var connectLiveReload = require('connect-livereload');
 var sourcemaps = require('gulp-sourcemaps');
 var livereload = require('gulp-livereload');
-
+var uglify = require('gulp-uglify');
 var PATHS = {
   src: {
     js: 'src/**/*.js',
@@ -49,6 +49,7 @@ gulp.task('js', function () {
     .pipe(rename({extname: '.js'})) //hack, see: https://github.com/sindresorhus/gulp-traceur/issues/54
     .pipe(sourcemaps.write('.'))
     .pipe(livereload())
+    .pipe(uglify())
     .pipe(gulp.dest('dist'));
 
 });
@@ -58,7 +59,6 @@ gulp.task('html', function () {
     .pipe(livereload())
     .pipe(gulp.dest('dist'));
 });
-
 gulp.task('libs', ['angular2', 'gsap', 'snapsvg'], function () {
   return gulp.src(PATHS.lib)
     .pipe(gulp.dest('dist/lib'));
@@ -76,6 +76,7 @@ gulp.task('angular2', function () {
     }))
     .pipe(traceur({modules: 'instantiate', moduleName: true}))
     .pipe(concat('angular2.js'))
+    .pipe(uglify())
     .pipe(gulp.dest('dist/lib'));
 });
 gulp.task('gsap', function () {
@@ -92,6 +93,7 @@ gulp.task('gsap', function () {
     }))
     .pipe(traceur({modules: 'instantiate', moduleName: true}))
     .pipe(concat('gsap.js'))
+    .pipe(uglify())
     .pipe(gulp.dest('dist/lib'));
 });
 gulp.task('snapsvg', function () {
@@ -105,6 +107,7 @@ gulp.task('snapsvg', function () {
     }))
     .pipe(traceur({modules: 'instantiate', moduleName: true}))
     .pipe(concat('snap.svg.js'))
+    .pipe(uglify())
     .pipe(gulp.dest('dist/lib'));
 });
 gulp.task('assets', function () {

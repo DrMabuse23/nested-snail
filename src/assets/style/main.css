@@ -1,0 +1,27 @@
+.main-wrapper {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    overflow: hidden;
+}
+.wrapper{
+    position: absolute;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    left: 0px;
+}
+#Ebene_1{
+    position: absolute;
+    bottom: -21px;
+}
+#grass {
+    position: relative;
+}
+#menu-wrapper{
+    width: 230px;
+    height: 230px;
+    position: absolute;
+    bottom: 31px;
+    left: 20px;
+}
